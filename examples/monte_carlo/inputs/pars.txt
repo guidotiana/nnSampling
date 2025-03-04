@@ -1,0 +1,32 @@
+# main inputs
+
+## model
+N 1000				#number of weights of the committee machine
+K 50				#number of neurons of the committee machine
+activ ReLU			#activation function of the hidden layer
+model_seed 11			#model seed for weights initialization
+from None			#path to the .pt file containing the starting weights (if None, gaussian initialization of the weights)
+
+## cost function
+cost CE				#cost function employed for the sampling
+zeta 0.5			#additive parameters for the cost function
+
+## metric function
+metric accuracy			#metric function employed during the sampling
+
+## dataset
+alpha 1.8			#ratio between the dataset size P and the number of weights N, i.e. alpha=P/N
+valuex gaussian			#distribution for the extraction of the inputs x
+data_seed 4			#dataset seed for data generation
+
+## generator
+generator_seed 7		#torch generator seed
+
+## sampler
+stime_list  [1.0e+3]     	#list of simulated times (moves=stime/(dt*isteps))
+T_list      [1.0e-4]     	#list of sampled temperatures
+dt_list     [1.0]       	#list of single-integration time-steps
+isteps_list [10]		#list of number of integration steps per move
+m_list      [1.0]		#list of weights masses
+lamda       1.0e-7		#regularization term coefficient
+lob         0			#boolean variable, whether to substitute or not lambda->lambda/beta (for each temperature)

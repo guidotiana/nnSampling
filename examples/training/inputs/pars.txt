@@ -1,0 +1,24 @@
+# main inputs
+
+## model
+N 1000				#number of weights of the committee machine
+K 50				#number of neurons of the committee machine
+activ ReLU			#activation function of the hidden layer
+model_seed 11			#model seed for weights initialization
+
+## cost function
+cost CE				#cost function employed for the sampling
+zeta 0.5			#additive parameters for the cost function
+
+## metric function
+metric accuracy			#metric function employed during the sampling
+
+## dataset
+alpha 1.8			#ratio between the dataset size P and the number of weights N, i.e. alpha=P/N
+valuex gaussian			#distribution for the extraction of the inputs x
+data_seed 4			#dataset seed for data generation
+
+## trainer
+epochs 1.0e+3     		#number of training epochs
+lr     1.0     			#learning rate
+lamda  1.0e-7			#regularization term coefficient

@@ -1,0 +1,11 @@
+# extra inputs
+
+results_dir results		#results directory
+prefix w			#prefix of the name with which weights are saved (full name, <which_end>_<prefix><move>.pt)
+save_step 1			#number of moves after which to save sampling data
+check_step 1			#number of moves after which to save check data
+print_step 10			#number of moves after which to print the sampler status
+wsave_step 10			#number of moves after which to save weights file and generator state
+restart 1			#boolean variable, whether to restart or not the previous simulation
+device cuda:0			#device on which to load weights and data
+num_threads 1			#maximum number of threads

@@ -1,0 +1,11 @@
+# extra inputs
+
+results_dir results		#results directory
+prefix w			#prefix of the name with which weights are saved (full name, <prefix><epoch>.pt)
+save_step 1			#number of moves after which to save sampling data
+print_step 100			#number of moves after which to print the sampler status
+wsave_step 100			#number of moves after which to save weights file (if dmet condition is not met yet)
+wsave_dmet 0.005		#minimum change in metric after which the current configuration is saved
+restart 1			#boolean variable, whether to restart or not the previous simulation
+device cuda:0			#device on which to load weights and data
+num_threads 1			#maximum number of threads
