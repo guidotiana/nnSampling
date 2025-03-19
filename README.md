@@ -1,6 +1,6 @@
 ## Sampling the space of solutions of an artificial neural network
 
-This repository contains the code to perform samplings of the space of parameters of a generic artificial neural network (ANN). In the $\textbf{article}$ directory, one can find the results of the exploration of a tree-like committee machine (which are presented here https://arxiv.org/pdf/2503.08266). Inside, each folder "Fig" contains files which refer to the corresponding image of the cited article. To try and reproduce such results, general snippets of code are provided in the $\textbf{examples}$ directory.
+This repository contains the code to perform samplings of the space of parameters of a generic artificial neural network (ANN). Within $\textbf{article\_data}$, one can find the results of the exploration of a tree-like committee machine (which are presented here https://arxiv.org/pdf/2503.08266). Inside, each folder "Fig" contains files which refer to the corresponding image of the cited article. To try and reproduce such results, general snippets of code are provided in the $\textbf{examples}$ directory.
 
 ---
 
