@@ -41,8 +41,10 @@ class NNModel():
     # Set NN weights
     def set_weights(self, wnew):
         assert all([name in self.weights.keys() for name in wnew]), f"NNModel.set_weights(): invalid layer found in wnew. Allowed values: {self.weights.keys()}"
-        for name in wnew:
-            self.NN.set_submodule[name] = wname[name].detach().clone().requires_grad_(True)
+        for wname in wnew:
+            for pname, param in self.NN.named_parameters():
+                if wname != pname: continue
+                param.data = wnew[wname].detach().clone().requires_grad_(True)
         self._init_weights()
 
     # Load NN weights from file
