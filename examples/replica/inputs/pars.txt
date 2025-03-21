@@ -11,7 +11,7 @@ r1_from None
 r2_from None
 
 ## cost function
-cost CE				#cost function employed for the sampling
+cost BCE			#cost function employed for the sampling
 zeta 0.5			#additive parameters for the cost function
 
 ## metric function

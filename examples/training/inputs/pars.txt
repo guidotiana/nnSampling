@@ -7,7 +7,7 @@ activ ReLU			#activation function of the hidden layer
 model_seed 11			#model seed for weights initialization
 
 ## cost function
-cost CE				#cost function employed for the sampling
+cost BCE			#cost function employed for the sampling
 zeta 0.5			#additive parameters for the cost function
 
 ## metric function

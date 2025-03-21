@@ -8,7 +8,7 @@ model_seed 11			#model seed for weights initialization
 from None			#path to the .pt file containing the starting weights (if None, gaussian initialization of the weights)
 
 ## cost function
-cost CE				#cost function employed for the sampling
+cost BCE			#cost function employed for the sampling
 zeta 0.5			#additive parameters for the cost function
 
 ## metric function

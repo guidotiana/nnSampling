@@ -163,14 +163,14 @@ def get_wfiles(weights_d, prefix='w', files_number=None, add_start=True, min_mov
 
 # Choose a cost function
 def choose_cost(name:str, **kwargs):
-    assert name in ('MSE', 'CE', 'Hinge'), f"choose_cost(): invalid value for 'name' variable ({name}). Allowed values: 'MSE', 'CE' (default gamma=0.5), 'Hinge' (default k=0.0, g=1.0)."
+    assert name in ('MSE', 'BCE', 'Hinge'), f"choose_cost(): invalid value for 'name' variable ({name}). Allowed values: 'MSE', 'BCE'(default zeta=0.5), 'Hinge'(default k=0.0, g=1.0)."
     if not 'mean' in kwargs.keys(): kwargs['mean'] = True
 
     if name == 'MSE':
         if kwargs['mean']: Cost = lambda fx, y: ((fx - y)**2).mean()
         else: Cost = lambda fx, y: (fx - y)**2
 
-    elif name == 'CE':
+    elif name == 'BCE':
         if not 'zeta' in kwargs.keys(): kwargs['zeta'] = 0.5
         k = 1./(2.*kwargs['zeta'])
         if kwargs['mean']: Cost = lambda fx, y: k*torch.log(1.+torch.exp(-fx*y/k)).mean()

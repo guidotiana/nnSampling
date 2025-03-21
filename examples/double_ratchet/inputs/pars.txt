@@ -9,7 +9,7 @@ fe_from None			#path to the .pt file containing the starting weights for the fir
 se_from None
 
 ## cost function
-cost CE				#cost function employed for the sampling
+cost BCE			#cost function employed for the sampling
 zeta 0.5			#additive parameters for the cost function
 
 ## metric function
