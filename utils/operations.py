@@ -3,44 +3,6 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 
 
-# Find optimal permutation between two weights vectors
-def find_permutation(wi, wj, check=True):
-    if check:
-        assert len(wi.keys())==len(wj.keys()), 'compute_q(): invalid inputs weights vectors. Dictionary lengths must coincide!'
-        assert all([wi_layer in wj for wi_layer in wi]), 'compute_q(): invalid inputs weights vectors. Dictionary keys must coincide!'
-
-    layers = [layer for layer in wi if 'bias' not in layer]
-    for ilayer, layer in enumerate(layers):
-        bias = f'{layer.rstrip("weight")}.bias'
-        if bias in wi:
-            wi[layer] = torch.concat(
-                (wi[layer], wi[bias].unsqueeze(-1)),
-                axis=-1
-            )
-            wj[layer] = torch.concat(
-                (wj[layer], wj[bias].unsqueeze(-1)),
-                axis=-1
-            )
-
-        wi[layer] = wi[layer].squeeze()
-        wj[layer] = wj[layer].squeeze()
-        assert wi[layer].ndim == 2, f'compute_q(): unexpected shape from layer {layer}: {tuple(wi[layer].shape)}. Expected (squeezed) dimensions: 2.'
-        K, N_k = wi[layer].shape
-
-        x, y = np.arange(K), np.arange(K)
-        X, Y = np.meshgrid(x, y)
-
-        cost = (wi[layer][Y.reshape(-1)]*wj[layer][X.reshape(-1)]).sum(axis=-1)
-        cost = cost.reshape(K, K)
-        row_ind, col_ind = linear_sum_assignment(cost.detach().numpy(), maximize=True)
-
-        if ilayer < len(layers)-1:
-            next_layer = layers[ilayer+1]
-            wi[next_layer] = wi[next_layer][..., row_ind]
-            wj[next_layer] = wj[next_layer][..., col_ind]
-
-    return wi, wj
-
 # Calculate squared modulus of a weight vector
 def compute_mod2(w):
     mod2 = 0.
@@ -114,3 +76,72 @@ def rescale(w, new_mod, old_mod=None, requires_grad=False):
 # Produce a copy of the weight vector
 def wcopy(w):
     return {name: w[name].detach().clone() for name in w}
+
+# Find optimal permutation between two weights vectors
+def find_permutation(wi, wj, check=True, copy=True, fix_bias=False):
+    if check:
+        assert len(wi.keys())==len(wj.keys()), f'find_permutation(): dictionary lengths ({len(wi)} and {len(wj)}) must coincide!'
+        for idx, (layer_i, layer_j) in enumerate(zip(wi, wj)):
+            assert layer_i == layer_j, f'find_permutation(): dictionary keys (index {idx}, {layer_i} and {layer_j}) must coincide!'
+            assert wi[layer_i].shape == wj[layer_j].shape, f'find_permutation(): keys shapes (index {idx}, {wi[layer_i].shape} and {wj[layer_j].shape}) must coincide!'
+    if copy:
+        wi, wj = wcopy(wi), wcopy(wj)
+
+    layers = [layer for layer in wi if 'bias' not in layer]
+    if not fix_bias:
+        for ilayer, layer in enumerate(layers):
+            assert (wi[layer].ndim == 3) and (wi[layer].shape[0] == 1), f'find_permutation(): unexpected shape from layer {layer} {tuple(wi[layer].shape)}. Expected shape (1, K, N_k).'
+            _, K, N_k = wi[layer].shape
+            x, y = np.arange(K), np.arange(K)
+            X, Y = np.meshgrid(x, y)
+
+            bias = f'{layer.rstrip(".weight")}.bias'
+            if bias in wi:
+                wi[layer] = torch.concat(
+                    (wi[layer], wi[bias].unsqueeze(-1)),
+                    axis=-1
+                )
+                wj[layer] = torch.concat(
+                    (wj[layer], wj[bias].unsqueeze(-1)),
+                    axis=-1
+                )
+
+            cost = (wi[layer][0, Y.reshape(-1)]*wj[layer][0, X.reshape(-1)]).sum(axis=-1).reshape(K, K)
+            row_ind, col_ind = linear_sum_assignment(cost.detach().numpy(), maximize=True)
+
+            wi[layer] = wi[layer][:, row_ind]
+            wj[layer] = wj[layer][:, col_ind]
+            if bias in wi:
+                wi[layer], wi[bias] = wi[layer][..., :-1], wi[layer][..., -1].squeeze(-1)
+                wj[layer], wj[bias] = wj[layer][..., :-1], wj[layer][..., -1].squeeze(-1)
+            if ilayer < len(layers)-1:
+                next_layer = layers[ilayer+1]
+                wi[next_layer] = wi[next_layer][..., row_ind]
+                wj[next_layer] = wj[next_layer][..., col_ind]
+
+    else:
+        for ilayer, layer in enumerate(layers):
+            assert (wi[layer].ndim == 3) and (wi[layer].shape[0] == 1), f'find_permutation(): unexpected shape from layer {layer} {tuple(wi[layer].shape)}. Expected shape (1, K, N_k).'
+            _, K, N_k = wi[layer].shape
+            x, y = np.arange(K), np.arange(K)
+            X, Y = np.meshgrid(x, y)
+
+            cost = (wi[layer][0, Y.reshape(-1)]*wj[layer][0, X.reshape(-1)])
+            bias = f'{layer.rstrip(".weight")}.bias'
+            if bias in wi:
+                cost_bias = (wi[bias][0, Y.reshape(-1)]*wj[bias][0, Y.reshape(-1)])
+                cost = torch.concat(
+                    (cost, cost_bias.unsqueeze(-1)),
+                    axis=-1
+                )
+            cost = cost.sum(axis=-1).reshape(K, K)
+            row_ind, col_ind = linear_sum_assignment(cost.detach().numpy(), maximize=True)
+
+            wi[layer] = wi[layer][:, row_ind]
+            wj[layer] = wj[layer][:, col_ind]
+            if ilayer < len(layers)-1:
+                next_layer = layers[ilayer+1]
+                wi[next_layer] = wi[next_layer][..., row_ind]
+                wj[next_layer] = wj[next_layer][..., col_ind]
+
+    return wi, wj
