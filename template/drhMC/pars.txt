@@ -1,0 +1,32 @@
+# main inputs
+
+## model
+N          1000			#number of weights of the committee machine (i.e. the input vector dimension)
+K          50			#number of neurons of the committee machine
+activ      ReLU			#activation function of the hidden layer. Allowed values are 'ReLU' (default) and 'Tanh'
+model_seed 0			#model seed for weights initialization (default: 0)
+fe_from    None			#path to the .pt file containing the starting weights of the first (fe)/second (se) end (if None, gaussian initialization of the weights)
+se_from    None
+
+
+## data
+P_train    1800			#training dataset size
+rho        gaussian		#distribution for the extraction of the inputs x. Allowed values are 'gaussian' (default) and 'binary'
+data_seed  1			#dataset seed for data generation (default: 0)
+
+
+## cost
+zeta       1.0			#inverse temperature associated with the binary cross-entropy loss function
+
+
+## sampler
+stime      1.0e+3		#simulated time, equal to the number of moves times the total integration time (that is, stime=moves*dt*isteps)
+T          1.0e-4		#sampled temperature
+k          1.0e-5		#value of the ratchet constant between the two models
+dt         1.0			#single-integration time-step
+isteps     100			#number of integration steps per move
+M          1.0			#mass associated to the weights of the NN (default: 1.0)
+qmax       0.999		#threshold value for the similarity between the two models (default: 0.999)
+lamda      1.0e-7		#Lagrange multiplier of the L2 regularization term added on top of the cost function (default: 0.0)
+bss        0			#batch splitting size used to divide the full batch when measuring the observables (loss function, cost function, and error function over all the input datasets) (default: 0)
+seed       0			#custom pytorch random-number generator seed (default: 0)
