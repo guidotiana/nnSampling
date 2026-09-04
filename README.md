@@ -23,8 +23,8 @@ The `code/` directory is the core of this repository, as it contains the impleme
 
 #### samplers/ <a name="Code_samplers"></a>
 - `hmc_sampler.py`: the implementation of the hybrid Monte Carlo (hMC) algorithm as the python class `HMCSampler`. 
-- `drhmc_sampler.py`: the implementation of the double-ratchet hybrid Monte Carlo (hMC) algorithm as the python class `DRHMCSampler`.
-- `crhmc_sampler.py`: the implementation of the coupled-replicas hybrid Monte Carlo (hMC) algorithm as the python class `CRHMCSampler`.
+- `drhmc_sampler.py`: the implementation of the double-ratchet hybrid Monte Carlo (drhMC) algorithm as the python class `DRHMCSampler`.
+- `crhmc_sampler.py`: the implementation of the coupled-replicas hybrid Monte Carlo (crhMC) algorithm as the python class `CRHMCSampler`.
 
 #### models/ <a name="Code_models"></a>
 - `nnmodel.py`: it contains the `NNModel` python class. It is derived from the `torch.nn.Module` class and it incapsulates the neural network model to be studied. It is used in the sampling classes `PLSampler`, `ConstrainedPLSampler` and `HMCSampler`.
